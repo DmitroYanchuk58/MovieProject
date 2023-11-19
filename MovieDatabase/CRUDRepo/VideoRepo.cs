@@ -1,19 +1,17 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using MovieDatabase.Models;
 using MovieDatabase.Validation;
-using System.ComponentModel.DataAnnotations;
 
 namespace MovieDatabase.CRUDRepo
 {
     public class VideoRepo : IRepo<Video>
     {
-        VideoValidation valid=new VideoValidation();
+        VideoValidation valid = new VideoValidation();
         Context.MovieDBContext dbContext = new Context.MovieDBContext();
 
         public bool Create(IFormFile videoFile, string voice)
         {
-            Video newVideo = new Video() {VoiceActing = voice };
+            Video newVideo = new Video() { VoiceActing = voice, IsDeleted = false };
             var validResult = valid.Validate(newVideo);
             if (validResult.IsValid)
             {
@@ -23,7 +21,7 @@ namespace MovieDatabase.CRUDRepo
                     var videoData = memoryStream.ToArray();
                     dbContext.Videos.Add(newVideo);
                     dbContext.SaveChanges();
-                    
+
                 }
             }
             else
@@ -42,7 +40,7 @@ namespace MovieDatabase.CRUDRepo
             //}
             //else
             //{
-                return null;
+            return null;
             //}
         }
 
@@ -57,7 +55,7 @@ namespace MovieDatabase.CRUDRepo
             //}
             //else
             //{
-                return false;
+            return false;
             //}
         }
 
@@ -72,7 +70,7 @@ namespace MovieDatabase.CRUDRepo
             //}
             //else
             //{
-             return false;
+            return false;
             //}
         }
     }

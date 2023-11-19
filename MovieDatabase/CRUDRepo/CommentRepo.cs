@@ -3,66 +3,110 @@ using MovieDatabase.Validation;
 
 namespace MovieDatabase.CRUDRepo
 {
-    //public class CommentRepo:IRepo<Comment>
-    //{
-    //    ModelValidation validation = new ModelValidation();
-    //    Context.MovieDBContext dbContext = new Context.MovieDBContext();
+    public class CommentRepo : IRepo<Comment>
+    {
+        CommentValidation valid = new CommentValidation();
+        Context.MovieDBContext dbContext = new Context.MovieDBContext();
 
-    //    public bool Create(Comment comment)
-    //    {
-    //        Comment newComment = new Comment() { Id = dbContext.Users.Any() ? dbContext.Users.Max(x => x.Id) + 1 : 0,IdMovie=comment.IdMovie,IdUser=comment.IdUser,Movie=comment.Movie,User=comment.User };
-    //        if (validation.ValidationComment(newComment))
-    //        {
-    //            dbContext.Comments.Add(newComment);
-    //            dbContext.SaveChanges();
-    //        }
-    //        else
-    //        {
-    //            return false;
-    //        }
-    //        return true;
-    //    }
-    //    public bool Delete(int id)
-    //    {
-    //        var findComment = dbContext.Comments.Find(id);
-    //        if (validation.ValidationComment(findComment))
-    //        {
-    //            dbContext.Remove(findComment);
-    //            dbContext.SaveChanges();
-    //            return true;
-    //        }
-    //        else
-    //        {
-    //            return false;
-    //        }
-    //    }
+        public bool Create(Comment comment)
+        {
+            Comment newComment = new Comment() { IdMovie = comment.IdMovie, IdUser = comment.IdUser, Text = comment.Text, IsDeleted = false };
+            if (newComment != null)
+            {
+                var validResult = valid.Validate(newComment);
+                if (validResult.IsValid)
+                {
+                    var movie = dbContext.Movies.Find(newComment.IdMovie);
+                    var user = dbContext.Users.Find(newComment.IdUser);
+                    if (movie != null && user != null)
+                    {
+                        newComment.User = user;
+                        newComment.Movie = movie;
+                        dbContext.Comments.Add(newComment);
+                        dbContext.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool Delete(int id)
+        {
+            var findComment = dbContext.Comments.Find(id);
+            if (findComment != null)
+            {
+                var validResult = valid.Validate(findComment);
+                if (validResult.IsValid)
+                {
+                    findComment.IsDeleted = true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-    //    public Comment Read(int id)
-    //    {
-    //        var findComment = dbContext.Comments.Find(id);
-    //        if (validation.ValidationComment(findComment))
-    //        {
-    //            return findComment;
-    //        }
-    //        else
-    //        {
-    //            return null;
-    //        }
-    //    }
+        public Comment Read(int id)
+        {
+            var findComment = dbContext.Comments.Find(id);
+            if (findComment != null && !findComment.IsDeleted)
+            {
+                var validResult = valid.Validate(findComment);
+                if (validResult.IsValid)
+                {
+                    findComment.Movie = dbContext.Movies.Find(findComment.IdMovie);
+                    findComment.User = dbContext.Users.Find(findComment.IdUser);
+                    return findComment;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-    //    public bool Update(Comment myObject, int id)
-    //    {
-    //        if (validation.ValidationComment(myObject))
-    //        {
-    //            var comment = dbContext.Comments.Find(id);
-    //            comment = myObject;
-    //            dbContext.SaveChanges();
-    //            return true;
-    //        }
-    //        else
-    //        {
-    //            return false;
-    //        }
-    //    }
-    //}
+        public bool Update(Comment myObject, int id)
+        {
+            if (myObject != null)
+            {
+                var validResult = valid.Validate(myObject);
+                if (validResult.IsValid)
+                {
+                    var comment = dbContext.Comments.Find(id);
+                    comment = myObject;
+                    dbContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }

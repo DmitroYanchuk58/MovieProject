@@ -16,5 +16,7 @@
         public ICollection<MovieGenre> MovieGenres { get; set; }
 
         public ICollection<MovieEmployee> MovieEmployees { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

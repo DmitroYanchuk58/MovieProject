@@ -6,6 +6,6 @@ namespace MovieDatabase.CRUDRepo
     {
         bool Delete(int id);
         T Read(int id);
-        bool Update(T myObject,int id);
+        bool Update(T myObject, int id);
     }
 }
