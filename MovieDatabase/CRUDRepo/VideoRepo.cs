@@ -33,45 +33,48 @@ namespace MovieDatabase.CRUDRepo
 
         public Video Read(int id)
         {
-            //Video video = dbContext.Videos.Find(id);
-            //if (validation.ValidationVideo(video))
-            //{
-            //    return video;
-            //}
-            //else
-            //{
-            return null;
-            //}
+            Video video = dbContext.Videos.Find(id);
+            var validResult=valid.Validate(video);
+            if (validResult.IsValid)
+            {
+                return video;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public bool Update(Video myObject, int id)
         {
-            //if (validation.ValidationVideo(myObject))
-            //{
-            //    Video video = dbContext.Videos.Find(id);
-            //    video = myObject;
-            //    dbContext.SaveChanges();
-            //    return true;
-            //}
-            //else
-            //{
-            return false;
-            //}
+            var validResult=valid.Validate(myObject);
+            if (validResult.IsValid)
+            {
+                Video video = dbContext.Videos.Find(id);
+                video = myObject;
+                dbContext.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool Delete(int id)
         {
-            //Video video = dbContext.Videos.Find(id);
-            //if (validation.ValidationVideo(video))
-            //{
-            //    dbContext.Videos.Remove(video);
-            //    dbContext.SaveChanges();
-            //    return true;
-            //}
-            //else
-            //{
-            return false;
-            //}
+            Video video = dbContext.Videos.Find(id);
+            var validResult= valid.Validate(video);
+            if (validResult.IsValid)
+            {
+                video.IsDeleted= true;
+                dbContext.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
