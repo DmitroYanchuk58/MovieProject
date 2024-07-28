@@ -1,8 +1,7 @@
 ﻿namespace MovieDatabase.Models
 {
-    public class User
+    public class User:Entity
     {
-        public int Id { get; set; }
 
         public string Nickname { get; set; }
 

@@ -1,8 +1,7 @@
 ﻿namespace MovieDatabase.Models
 {
-    public class MovieEmployee
+    public class MovieEmployee:Entity
     {
-        public int Id { get; set; }
 
         public int IdEmployee { get; set; }
 

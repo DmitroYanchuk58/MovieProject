@@ -3,7 +3,7 @@ using MovieDatabase.Models;
 
 namespace MovieDatabase.Validation
 {
-    public class MovieGenreValidation : AbstractValidator<MovieGenre>
+    public class MovieGenreValidation : Validation<MovieGenre>
     {
         public MovieGenreValidation()
         {

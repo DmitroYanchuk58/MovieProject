@@ -1,8 +1,7 @@
 ﻿namespace MovieDatabase.Models
 {
-    public class Rate
+    public class Rate:Entity
     {
-        public int Id { get; set; }
 
         public int Evaluation { get; set; }
 

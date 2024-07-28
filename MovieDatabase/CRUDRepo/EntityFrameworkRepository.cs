@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieDatabase.CRUDRepo
 {
-    public class EntityFrameworkRepository<T> : IRepo<T> where T : class
+    public abstract class EntityFrameworkRepository<T> : IRepo<T> where T : class
     {
         private readonly DbContext _context;
         private readonly DbSet<T> _dbSet;
@@ -23,11 +23,10 @@ namespace MovieDatabase.CRUDRepo
                 throw;
             }
         }
-        public void Delete(int id)
+        public virtual void Delete(T entity)
         {
             try
             {
-                var entity = _dbSet.Find(id);
                 _dbSet.Remove(entity);
             }
             catch
@@ -36,7 +35,7 @@ namespace MovieDatabase.CRUDRepo
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             try
             {
@@ -48,7 +47,7 @@ namespace MovieDatabase.CRUDRepo
             }
         }
 
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             try
             {
@@ -57,11 +56,24 @@ namespace MovieDatabase.CRUDRepo
             catch { throw; }
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             try
             {
                 _context.Entry(entity).State = EntityState.Modified;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public virtual void Create(T entity)
+        {
+            try
+            {
+                _dbSet.Add(entity);
+                _context.SaveChanges();
             }
             catch
             {

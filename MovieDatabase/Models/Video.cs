@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
 
 namespace MovieDatabase.Models
 {
-    public class Video
+    public class Video : Entity 
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
         public string VoiceActing { get; set; }
 
-        [Required]
         public byte[] VideoData { get; set; }
 
         public int IdMovie { get; set; }

@@ -1,9 +1,7 @@
 ﻿namespace MovieDatabase.Models
 {
-    public class Comment
+    public class Comment:Entity
     {
-        public int Id { get; set; }
-
         public int IdUser { get; set; }
 
         public User User { get; set; }

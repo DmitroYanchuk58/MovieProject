@@ -3,7 +3,7 @@ using MovieDatabase.Models;
 
 namespace MovieDatabase.Validation
 {
-    public class VideoValidation : AbstractValidator<Video>
+    public class VideoValidation : Validation<Video>
     {
         public VideoValidation()
         {

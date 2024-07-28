@@ -1,8 +1,7 @@
 ﻿namespace MovieDatabase.Models
 {
-    public class MovieGenre
+    public class MovieGenre:Entity
     {
-        public int Id { get; set; }
 
         public int IdGenre { get; set; }
 
