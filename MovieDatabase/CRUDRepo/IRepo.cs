@@ -4,8 +4,9 @@ namespace MovieDatabase.CRUDRepo
 {
     public interface IRepo<T>
     {
-        bool Delete(int id);
-        T Read(int id);
-        bool Update(T myObject, int id);
+        void Delete(int id);
+        void Update(T entity);
+        T GetById(int id);
+        IEnumerable<T> GetAll();
     }
 }
