@@ -8,7 +8,7 @@ namespace DataAccessLayer.Validation
         public MovieValidation()
         {
             RuleFor(m => m.Name).NotNull().MaximumLength(1000).MinimumLength(1);
-            RuleFor(m => m.Description).NotNull().MaximumLength(10000).MinimumLength(10);
+            RuleFor(m => m.Description).NotNull().MaximumLength(100000).MinimumLength(10);
         }
     }
 }

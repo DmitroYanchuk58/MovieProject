@@ -11,7 +11,5 @@
         public Movie Movie { get; set; }
 
         public string Text { get; set; }
-
-        public bool IsDeleted { get; set; }
     }
 }

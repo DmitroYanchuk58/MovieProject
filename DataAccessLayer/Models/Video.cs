@@ -8,7 +8,5 @@
 
         public int IdMovie { get; set; }
         public Movie Movie { get; set; }
-
-        public bool IsDeleted { get; set; }
     }
 }

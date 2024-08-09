@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Contacts;
+using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Repositories
 {
-    public abstract class EntityFrameworkRepository<T> : IRepo<T> where T : class
+    public abstract class EntityFrameworkRepository<T> : IRepo<T> where T : Entity
     {
         private readonly DbContext _context;
         private readonly DbSet<T> _dbSet;
@@ -11,7 +12,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                _context = context;
+                _context = context ?? throw new ArgumentNullException(nameof(context));
                 _dbSet = _context.Set<T>();
             }
             catch
@@ -23,7 +24,8 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                _dbSet.Remove(entity);
+                _dbSet.Find(entity).IsDeleted=false;
+                _context.SaveChanges();
             }
             catch
             {
@@ -35,7 +37,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return _dbSet.ToList();
+                return _dbSet.ToList().Where(obj=>obj.IsDeleted==false);
             }
             catch
             {
@@ -52,11 +54,11 @@ namespace DataAccessLayer.Repositories
             catch { throw; }
         }
 
-        public virtual void Update(T entity)
+        public virtual void Update(T entity,int id)
         {
             try
             {
-                _context.Entry(entity).State = EntityState.Modified;
+                _context.SaveChanges();
             }
             catch
             {

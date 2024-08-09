@@ -55,12 +55,21 @@ namespace DataAccessLayer.Repositories
             catch { throw; }
         }
 
-        public override void Update(Rate entity)
+        public override void Update(Rate entity, int id)
         {
+            var obj = _dbSet.Find(id);
+
             var results = validator.Validate(entity);
+
             if (results.IsValid)
             {
-                base.Update(entity);
+                obj.IdMovie = entity.IdMovie;
+                obj.IdUser = entity.IdUser;
+                obj.Evaluation = entity.Evaluation;
+                obj.Movie = entity.Movie;
+                obj.User = entity.User;
+                obj.IsDeleted = entity.IsDeleted;
+                base.Update(obj, id);
             }
             else
             {

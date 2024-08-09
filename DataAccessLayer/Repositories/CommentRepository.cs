@@ -46,12 +46,21 @@ namespace DataAccessLayer.Repositories
            return base.GetById(id);
         }
 
-        public override void Update(Comment entity)
+        public override void Update(Comment entity, int id)
         {
+            var obj = _dbSet.Find(id);
+
             var results = validator.Validate(entity);
+
             if (results.IsValid)
             {
-                base.Update(entity);
+                obj.IdMovie = entity.IdMovie;
+                obj.IdUser=entity.IdUser;
+                obj.Text = entity.Text;
+                obj.User = entity.User;
+                obj.Movie = entity.Movie;
+                obj.IsDeleted = entity.IsDeleted;
+                base.Update(obj, id);
             }
             else
             {
