@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models;
 using DataAccessLayer.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessAccessLayer.BusinessObjects
 {
@@ -12,16 +13,17 @@ namespace BusinessAccessLayer.BusinessObjects
             throw new Exception("Object can't work without parameters");
         }
 
-        public MovieDTO(MovieDBContext dbContext,Movie movie)
+        public MovieDTO(MovieDBContext dbContext,int idMovie)
         {
             this.DbContext = dbContext;
-
-
-            this.Movie = movie;
-            GetAverageRate();
-            GetComments();
-            GetGenres();
-            GetVideos();
+            this.Movie = DbContext.Movies.Find(idMovie);
+            if (this.Movie != null)
+            {
+                this.Rate=GetAverageRate();
+                this.Comments=GetComments();
+                this.Genres=GetGenres();
+                this.Video=GetVideos();
+            }
         }
         public Movie Movie { get; set; }    
 
@@ -31,7 +33,7 @@ namespace BusinessAccessLayer.BusinessObjects
 
         public List<Genre> Genres { get; set; }
 
-        public Rate Rate { get; set; }
+        public int Rate { get; set; }
 
         private List<Genre> GetGenres()
         {
@@ -44,6 +46,11 @@ namespace BusinessAccessLayer.BusinessObjects
                 .Select(join=>join.genre)
                 .ToList();
 
+            if (genres.IsNullOrEmpty()&&genres.Count==0)
+            {
+                return null;
+            }
+
             return genres;
         }
 
@@ -51,18 +58,32 @@ namespace BusinessAccessLayer.BusinessObjects
         {
             var comments=DbContext.Comments.Where(comment=>comment.IdMovie==Movie.Id).ToList();
 
-            return comments;
+            if (comments.IsNullOrEmpty() && comments.Count == 0)
+            {
+                return null; 
+            }
+
+            return comments.ToList();
         }
 
         private List<Video> GetVideos()
         {
-            var videos=DbContext.Videos.Where(video=>video.IdMovie==Movie.Id).ToList();
+            var videos =DbContext.Videos.Where(video=>video.IdMovie==Movie.Id).ToList();
 
-            return videos;
+            if (videos.IsNullOrEmpty() && videos.Count == 0)
+            {
+                return null;
+            }
+
+            return videos.ToList();
         }
         private int GetAverageRate()
         {
-            var rates=DbContext.Rates.Where(rate => rate.IdMovie == Movie.Id);
+            var rates=DbContext.Rates.Where(rate => rate.IdMovie == Movie.Id).ToList();
+            if (rates.IsNullOrEmpty() && rates.Count == 0)
+            {
+                return 0;
+            }
 
             int averageRate = (int)rates.Average(rate => rate.Evaluation);
 
