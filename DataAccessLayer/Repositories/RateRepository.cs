@@ -59,21 +59,26 @@ namespace DataAccessLayer.Repositories
         {
             var obj = _dbSet.Find(id);
 
-            var results = validator.Validate(entity);
-
-            if (results.IsValid)
-            {
+            if(entity.IdMovie!=0)
                 obj.IdMovie = entity.IdMovie;
+            if(entity.IdUser!=0)
                 obj.IdUser = entity.IdUser;
+            if(entity.Evaluation!=0&&entity.Evaluation<100&&entity.Evaluation>0)
                 obj.Evaluation = entity.Evaluation;
+            if(entity.Movie!=null)
                 obj.Movie = entity.Movie;
+            if(entity.User!=null)
                 obj.User = entity.User;
+            if(entity.IsDeleted!=null)
                 obj.IsDeleted = entity.IsDeleted;
+
+            try
+            {
                 base.Update(obj, id);
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("The facility failed the inspection");
+                throw new Exception(ex.Message);
             }
         }
 
@@ -82,12 +87,21 @@ namespace DataAccessLayer.Repositories
             var results = validator.Validate(entity);
             if (results.IsValid)
             {
+                if (RateExists(entity))
+                {
+                   throw new Exception("Rate already exists");
+                }
                 base.Create(entity);
             }
             else
             {
                 throw new Exception("The facility failed the inspection");
             }
+        }
+
+        private bool RateExists(Rate entity)
+        {
+            return _dbSet.Any(rate => rate.IdMovie == entity.IdMovie && rate.IdUser == entity.IdUser);
         }
     }
 }

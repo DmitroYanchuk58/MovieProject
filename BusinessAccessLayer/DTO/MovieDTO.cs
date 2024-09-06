@@ -23,6 +23,7 @@ namespace BusinessAccessLayer.BusinessObjects
                 this.Comments=GetComments();
                 this.Genres=GetGenres();
                 this.Video=GetVideos();
+                this.Employees = GetEmployees();
             }
         }
         public Movie Movie { get; set; }    
@@ -32,6 +33,8 @@ namespace BusinessAccessLayer.BusinessObjects
         public List<Comment> Comments { get; set; } 
 
         public List<Genre> Genres { get; set; }
+
+        public List<Employee> Employees { get; set; }
 
         public int Rate { get; set; }
 
@@ -52,6 +55,25 @@ namespace BusinessAccessLayer.BusinessObjects
             }
 
             return genres;
+        }
+
+        private List<Employee> GetEmployees()
+        {
+            var employees = DbContext.Employees.Join(
+                DbContext.MovieEmployees,
+                employee => employee.Id,
+                movieEmployee => movieEmployee.IdEmployee,
+                (employee, MovieEmployee) => new { employee, MovieEmployee })
+                .Where(join => join.MovieEmployee.IdMovie == Movie.Id)
+                .Select(join => join.employee)
+                .ToList();
+
+            if (employees.IsNullOrEmpty() && employees.Count == 0)
+            {
+                return null;
+            }
+
+            return employees;
         }
 
         private List<Comment> GetComments()

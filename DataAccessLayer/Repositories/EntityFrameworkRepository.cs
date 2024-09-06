@@ -24,7 +24,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                _dbSet.Find(entity).IsDeleted=false;
+                _dbSet.Find(entity.Id).IsDeleted=true;
                 _context.SaveChanges();
             }
             catch
@@ -49,7 +49,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                return _dbSet.Find(id);
+                return _dbSet.Where(obj => obj.IsDeleted == false).FirstOrDefault();
             }
             catch { throw; }
         }

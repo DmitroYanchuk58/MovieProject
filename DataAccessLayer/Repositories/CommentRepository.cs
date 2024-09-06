@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Models;
 using DataAccessLayer.Validation;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DataAccessLayer.Repositories
 {
@@ -49,22 +50,25 @@ namespace DataAccessLayer.Repositories
         public override void Update(Comment entity, int id)
         {
             var obj = _dbSet.Find(id);
-
-            var results = validator.Validate(entity);
-
-            if (results.IsValid)
-            {
+            if(entity.IdMovie!=0)
                 obj.IdMovie = entity.IdMovie;
+            if(entity.IdUser!=0)
                 obj.IdUser=entity.IdUser;
+            if(!entity.Text.IsNullOrEmpty())
                 obj.Text = entity.Text;
+            if(entity.User!=null)
                 obj.User = entity.User;
+            if(entity.Movie!=null)
                 obj.Movie = entity.Movie;
+            if(entity.IsDeleted!=null)
                 obj.IsDeleted = entity.IsDeleted;
+            try
+            {
                 base.Update(obj, id);
             }
-            else
+            catch(Exception ex)
             {
-                throw new Exception("The facility failed the inspection");
+                throw new Exception(ex.Message);
             }
         }
 
